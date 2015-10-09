@@ -5,6 +5,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -12,7 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class ProtocolAnalyzerUI {
+public class AppRunner {
 	/**
 	 * Main class to run the application
 	 * Defines the UI via which the application is run
@@ -26,7 +27,8 @@ public class ProtocolAnalyzerUI {
 	private static JButton submitButton;
 	private String inputURL;
 	
-	public ProtocolAnalyzerUI(){
+	
+	public AppRunner(){
 		System.out.println("Initializing UI");
 		initialize();
 	}
@@ -69,7 +71,8 @@ public class ProtocolAnalyzerUI {
 	public void submitButtonActionPerformed(ActionEvent event){
 		String inputURL = textField.getText();
 		ReadInputStream urlReader = new ReadInputStream();
-		urlReader.printStream(inputURL);
+		urlReader.getFileList(inputURL);
+		
 	}
 	
 	public void setFrame(JFrame newFrame) {
@@ -81,9 +84,13 @@ public class ProtocolAnalyzerUI {
 	}
 	
 	public static void main(String []args){
-		System.out.println("Getting arguments...");
+		LoggerWrapper loggerWrapper = LoggerWrapper.getInstance();
+		loggerWrapper.myLogger.info("Initializing...");
+		
 		// String checkLevel = args[0];
-		ProtocolAnalyzerUI app = new ProtocolAnalyzerUI();
+		loggerWrapper.myLogger.info("Creating User Interface...");
+		AppRunner app = new AppRunner();
+		
 	}
 	
 

@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.apache.commons.io.FilenameUtils;
 
 // import static HLSProtocolAnalyzer.PlaylistTagConstants;
@@ -22,11 +25,34 @@ public class ReadInputStream {
 	private static String inputLine;
 	private FileChecker fileChecker = new FileChecker();
 	private LoggerWrapper loggerWrapper = LoggerWrapper.getInstance();
+	private ArrayList<String> fileList = new ArrayList<String>();
 
 	public void ReadInputStream(String inputURL) {
 		this.inputURL = inputURL;
 	}
 
+	public void getFileList(String inputURL){
+		loggerWrapper.myLogger.info("Getting list of files...");
+		// fileList
+		if (isValidURL(inputURL)) {
+		try {
+			Document doc;
+			doc = Jsoup.connect(inputURL).get();
+	        System.out.println("Begin");
+	        for (Element file : doc.select("td a")) {
+	            fileList.add(file.attr("href"));
+		}
+	        } catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("Test " + fileList);
+        }
+		else{
+			loggerWrapper.myLogger.severe("Invalid URL");
+		}
+	}
+	
 	public void printStream(String inputURL) {
 		if (isValidURL(inputURL)) {
 			try {
