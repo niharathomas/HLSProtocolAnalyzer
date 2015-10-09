@@ -25,34 +25,59 @@ public class ReadInputStream {
 	private static String inputLine;
 	private FileChecker fileChecker = new FileChecker();
 	private LoggerWrapper loggerWrapper = LoggerWrapper.getInstance();
-	private ArrayList<String> fileList = new ArrayList<String>();
+	private ArrayList<String> masterFileList = new ArrayList<String>();
+	// If extension is .ts, store in mediaFiles List
+	private ArrayList<String> mediaFiles = new ArrayList<String>();
+	// If extension is .m3u8, store in mediaPlaylists List
+	private ArrayList<String> playlistFiles = new ArrayList<String>();
 
 	public void ReadInputStream(String inputURL) {
 		this.inputURL = inputURL;
 	}
 
-	public void getFileList(String inputURL){
+	public ArrayList<String> getMasterFileList(String inputURL) {
 		loggerWrapper.myLogger.info("Getting list of files...");
 		// fileList
 		if (isValidURL(inputURL)) {
-		try {
-			Document doc;
-			doc = Jsoup.connect(inputURL).get();
-	        System.out.println("Begin");
-	        for (Element file : doc.select("td a")) {
-	            fileList.add(file.attr("href"));
-		}
-	        } catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.println("Test " + fileList);
-        }
-		else{
+			try {
+				Document doc;
+				doc = Jsoup.connect(inputURL).get();
+				System.out.println("Begin");
+				for (Element file : doc.select("td a")) {
+					this.masterFileList.add(file.attr("href"));
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println("Test " + masterFileList);
+			return this.masterFileList;
+		} else {
 			loggerWrapper.myLogger.severe("Invalid URL");
+			return null;
 		}
 	}
-	
+
+	public void fileSeparator() {
+		/*
+		 * Takes masterFileList as the input and splits files based on type .ts
+		 * media files are added to the mediaFiles ArrayList .m3u8 playlist
+		 * files are added to the playlistFiles ArrayList
+		 */
+		for (String file : masterFileList) {
+			if ((FilenameUtils.getExtension(file)).equals("ts")) {
+				mediaFiles.add(file);
+			} else if ((FilenameUtils.getExtension(file)).equals("m3u8")) {
+				playlistFiles.add(file);
+			} else {
+				loggerWrapper.myLogger.severe("Invalid file extension");
+			}
+		}
+		System.out.println(mediaFiles);
+		System.out.println(playlistFiles);
+		System.exit(0);
+	}
+
 	public void printStream(String inputURL) {
 		if (isValidURL(inputURL)) {
 			try {

@@ -71,7 +71,8 @@ public class AppRunner {
 	public void submitButtonActionPerformed(ActionEvent event){
 		String inputURL = textField.getText();
 		ReadInputStream urlReader = new ReadInputStream();
-		urlReader.getFileList(inputURL);
+		ArrayList<String> masterFileList = urlReader.getMasterFileList(inputURL);
+		urlReader.fileSeparator();
 		
 	}
 	
