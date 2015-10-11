@@ -73,8 +73,8 @@ public class ReadInputStream {
 				loggerWrapper.myLogger.severe("Invalid file extension");
 			}
 		}
-		System.out.println(mediaFiles);
-		System.out.println(playlistFiles);
+		System.out.println("Media files: " + mediaFiles);
+		System.out.println("Playlist files: " + playlistFiles);
 		System.exit(0);
 	}
 
