@@ -3,9 +3,15 @@ package HLSProtocolAnalyzer;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class MediaPlaylistChecker extends FileChecker{
-	Integer mediaSequence = 6800;
+	Integer mediaSequence = 0;
+	List<String> mandatoryMediaPlaylistTags = Arrays.asList("EXT-X-VERSION", "EXTINF", "EXT-X-TARGETDURATION",
+			"EXT-X-ENDLIST");
+	// List to store the tags found in the file
+	private ArrayList<String> tags = new ArrayList<String>();
 
 	public MediaPlaylistChecker(String inBaseURL, String inFileName, ArrayList<String> inMediaSegments, 
 			ArrayList<String> inPlaylistFiles, ExcelResultWriter inResultWriter) {
@@ -39,6 +45,8 @@ public class MediaPlaylistChecker extends FileChecker{
 				// checkValidURIs("Media Segment", mediaSegments);
 			}
 			checkMediaSegmentSequence();
+			checkMandatoryTags();
+			System.out.println(tagsInFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -60,12 +68,7 @@ public class MediaPlaylistChecker extends FileChecker{
 	
 	public void checkMediaSegmentTags(){
 		if (inputLine.startsWith(new String("#EXTINF"))) {
-			/*if (tagsInFile.containsValue("#EXTINF")) {
-				loggerWrapper.myLogger.info("Media segment in file");
-			} else {
-				loggerWrapper.myLogger.info("First Media segment in file");
-			}*/
-			tagsInFile.put(lineNumber, "#EXTINF");
+			tagsInFile.put(lineNumber, "EXTINF");
 			loggerWrapper.myLogger.info("#EXTINF at line: " + lineNumber);
 			String stringDuration = inputLine.substring(inputLine.indexOf(":") + 1, inputLine.indexOf(","));
 			
@@ -83,7 +86,7 @@ public class MediaPlaylistChecker extends FileChecker{
 			else if (version >= 3){
 				if(!stringDuration.contains(".")){
 					resultWriter.writeNewRecord("Invalid Media Segment Duration", fileName,
-							"Media Segment duration at line #" + lineNumber+ " should be floating-point for compatibility versions < 3");
+							"Media Segment duration at line #" + lineNumber+ " should be floating-point for compatibility versions >= 3");
 				}
 				else{
 					Double mediaSegmentDuration = Double.parseDouble(stringDuration);
@@ -92,15 +95,16 @@ public class MediaPlaylistChecker extends FileChecker{
 			else {
 				loggerWrapper.myLogger.info("Invalid version");
 			}
+			checkDuration(stringDuration);
 			
 		} 
 	}
 	
-	public void checkDuration(){
-		/*Double mediaSegmentDuration = Double.parseDouble(mediaSegmentDuration);
+	public void checkDuration(String stringDuration){
+		Double mediaSegmentDuration = Double.parseDouble(stringDuration);
 		loggerWrapper.myLogger
 				.info("Duration of the next media segment is: "
-						+ mediaSegmentDuration);
+						+ duration);
 		//if (mediaSegmentDuration.equals(duration)) {
 		if (mediaSegmentDuration <= duration) {
 			loggerWrapper.myLogger
@@ -109,18 +113,19 @@ public class MediaPlaylistChecker extends FileChecker{
 			loggerWrapper.myLogger
 					.severe("Error!!! Media segment duration greater than maximum allowed");
 			resultWriter.writeNewRecord("Invalid Media Segment Duration", fileName, "Error at line #: " + lineNumber + ". Media segment duration greater than maximum allowed");
-		}*/
+		}
 		
 	}
 
 	public void checkMediaPlaylistTags(){
+		System.out.println("Checking Media Playlist Tags");
 		if (inputLine.startsWith(new String("#EXT-X-TARGETDURATION"))) {
-			if (tagsInFile.containsValue("#EXT-X-TARGETDURATION")) {
+			if (tagsInFile.containsValue("EXT-X-TARGETDURATION")) {
 				loggerWrapper.myLogger
 						.severe("ERROR!!! Repeated tag #EXT-X-TARGETDURATION at line # "
 								+ lineNumber);
 			} else {
-				tagsInFile.put(lineNumber, "#EXT-X-TARGETDURATION");
+				tagsInFile.put(lineNumber, "EXT-X-TARGETDURATION");
 				loggerWrapper.myLogger
 						.info("#EXT-X-TARGETDURATION at line: "
 								+ lineNumber);
@@ -128,9 +133,48 @@ public class MediaPlaylistChecker extends FileChecker{
 				// String title =
 				// inputLine.substring(inputLine.indexOf(" "));
 				loggerWrapper.myLogger
-						.info("Maximum Media Segment duration: " + duration);
-				// System.out.println("Title: " + title);
+						.info("Maximum Media Segment duration: " + duration + " . Filename = " + fileName);
 			}
 	}
+		else if (inputLine
+				.startsWith(new String("#EXT-X-MEDIA-SEQUENCE"))) {
+			// Media segment exists? If yes --> Error
+			// Else, save media segment duration
+			if (tagsInFile.containsValue("EXT-X-MEDIA-SEQUENCE")) {
+				loggerWrapper.myLogger
+				.severe("ERROR!!! Repeated tag EXT-X-MEDIA-SEQUENCE at line # "
+						+ lineNumber);;
+			} else {
+				tagsInFile.put(lineNumber, "EXT-X-MEDIA-SEQUENCE");
+				mediaSequence = Integer.parseInt(inputLine.substring(inputLine
+						.indexOf(":") + 1));
+				loggerWrapper.myLogger
+						.info("Media Sequence number of the first media segment: "
+								+ mediaSequence);
+			}
+		} else if (inputLine.startsWith(new String("#EXT-X-ENDLIST"))) {
+			if (!inputLine.equals("#EXT-X-ENDLIST")){
+				resultWriter.writeNewRecord("Invalid tag", fileName,
+						"Tag " + inputLine + " found at line #: " + lineNumber);
+			}
+			else{
+				tagsInFile.put(lineNumber, "EXT-X-ENDLIST");
+			}
+			loggerWrapper.myLogger
+					.info("End of media playlist. No more media segments after this tag.");
+		}
 }
+	
+	public void checkMandatoryTags(){
+		
+		for (String value: tagsInFile.values()){
+			tags.add(value);
+		}
+		for (String tag: mandatoryMediaPlaylistTags){
+			if (!tags.contains(tag)){
+				resultWriter.writeNewRecord("Missing " + tag, fileName, 
+						"Expected " + tag + " at EOF");
+			}
+		}
+	}
 }

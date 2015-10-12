@@ -20,8 +20,6 @@ public abstract class FileChecker {
 	ExcelResultWriter resultWriter;
 	protected LoggerWrapper loggerWrapper = LoggerWrapper.getInstance();
 	
-	// List to store the tags found in the file
-	private Map<Integer, String> tags = new HashMap<Integer, String>(200);
 	// List to store all tags found in the input file
 	protected Map<Integer, String> tagsInFile = new HashMap<Integer, String>(50);
 	// Array list to store media segments found in the input file
@@ -34,7 +32,6 @@ public abstract class FileChecker {
 	protected ArrayList<String> validMediaPlaylists = new ArrayList<String>();
 	// Array list that will be used to compare valid URIs to URIs from the file
 	ArrayList<String> list = new ArrayList<String>();
-	List<String> mandatoryTags = Arrays.asList("#EXTM3U");
 	
 	public FileChecker(String inBaseURL, String inFileName, ArrayList<String> inMediaSegments, 
 			ArrayList<String> inPlaylistFiles, ExcelResultWriter inResultWriter){
@@ -56,12 +53,12 @@ public abstract class FileChecker {
 	public void checkFirstTag(String inputLine, int lineNumber) {
 		//if (inputLine.startsWith(new String("#EXTM3U"))) {
 		if (inputLine.equals("#EXTM3U")) {
-			if (tagsInFile.containsValue("#EXTM3U")) {
+			if (tagsInFile.containsValue("EXTM3U")) {
 				loggerWrapper.myLogger
 						.severe("ERROR!!! Repeated tag #EXTM3U at line # "
 								+ lineNumber);
 			} else {
-				tagsInFile.put(lineNumber, "#EXTM3U");
+				tagsInFile.put(lineNumber, "EXTM3U");
 				loggerWrapper.myLogger.info("Valid first line of input URL");
 			}
 		} else {
@@ -102,8 +99,7 @@ public abstract class FileChecker {
 
 			System.out.println("Basic tag: " + inputLine);
 			System.out.println(tagsInFile);
-			if (tagsInFile.containsValue("#EXT-X-VERSION")) {
-				System.out.println(fileName + " ****** " + lineNumber);
+			if (tagsInFile.containsValue("EXT-X-VERSION")) {
 				resultWriter.writeNewRecord("Repeated Tag", fileName,
 						"Repeated tag #EXT-X-VERSION at line # "
 								+ lineNumber);
@@ -112,8 +108,7 @@ public abstract class FileChecker {
 								+ lineNumber);
 			} else {
 				System.out.println("No repeated basic tags");
-				tagsInFile.put(lineNumber, "#EXT-X-VERSION");
-				System.out.println(tagsInFile);
+				tagsInFile.put(lineNumber, "EXT-X-VERSION");
 				loggerWrapper.myLogger.info("Line: " + lineNumber + " "
 						+ inputLine);
 				
@@ -142,10 +137,6 @@ public abstract class FileChecker {
 			}
 		}
 		
-	}
-	
-	public void checkValidTags(){
-		// Checks that all tags needed for a given file type match
 	}
 	
 	abstract void runChecks(BufferedReader bufReader);
