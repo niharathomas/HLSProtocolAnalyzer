@@ -55,7 +55,6 @@ public class URLReader {
 					this.masterFileList.add(file.attr("href"));
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return this.masterFileList;
@@ -104,7 +103,6 @@ public class URLReader {
 				System.out.println("File under test: " + fileName);
 				checkFile.runChecks(bufReader);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

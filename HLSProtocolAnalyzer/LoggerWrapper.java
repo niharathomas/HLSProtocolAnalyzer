@@ -16,10 +16,8 @@ public class LoggerWrapper {
 			try {
 				prepareLogger();
 			} catch (SecurityException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			instance = new LoggerWrapper();
