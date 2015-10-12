@@ -5,14 +5,16 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class ProtocolAnalyzerUI {
+public class AppRunner {
 	/**
 	 * Main class to run the application
 	 * Defines the UI via which the application is run
@@ -26,7 +28,8 @@ public class ProtocolAnalyzerUI {
 	private static JButton submitButton;
 	private String inputURL;
 	
-	public ProtocolAnalyzerUI(){
+	
+	public AppRunner(){
 		System.out.println("Initializing UI");
 		initialize();
 	}
@@ -68,8 +71,16 @@ public class ProtocolAnalyzerUI {
 	
 	public void submitButtonActionPerformed(ActionEvent event){
 		String inputURL = textField.getText();
-		ReadInputStream urlReader = new ReadInputStream();
-		urlReader.printStream(inputURL);
+		URLReader urlReader = new URLReader(inputURL);
+		if (urlReader.isValidURL()){
+			ArrayList<String> masterFileList = urlReader.getMasterFileList(inputURL);
+			urlReader.fileSeparator();
+			urlReader.fileLoop(inputURL);
+		}
+		else{
+			JOptionPane.showMessageDialog(null, "Please enter a valid URL");
+		}
+		
 	}
 	
 	public void setFrame(JFrame newFrame) {
@@ -81,9 +92,11 @@ public class ProtocolAnalyzerUI {
 	}
 	
 	public static void main(String []args){
-		System.out.println("Getting arguments...");
-		// String checkLevel = args[0];
-		ProtocolAnalyzerUI app = new ProtocolAnalyzerUI();
+		LoggerWrapper loggerWrapper = LoggerWrapper.getInstance();
+		loggerWrapper.myLogger.info("Initializing...");
+		loggerWrapper.myLogger.info("Creating User Interface...");
+		AppRunner app = new AppRunner();
+		
 	}
 	
 

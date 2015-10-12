@@ -51,7 +51,6 @@ public class ExcelResultWriter {
 	}
 
 	public void writeNewRecord(String errorType, String filename, String errorDetails) {
-		System.out.println("Here");
 		recordNumber++;
 		errorNumber++;
 		try {
