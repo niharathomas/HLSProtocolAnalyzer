@@ -70,7 +70,7 @@ public class AppRunner {
 	
 	public void submitButtonActionPerformed(ActionEvent event){
 		String inputURL = textField.getText();
-		URLReader urlReader = new URLReader();
+		URLReader urlReader = new URLReader(inputURL);
 		ArrayList<String> masterFileList = urlReader.getMasterFileList(inputURL);
 		urlReader.fileSeparator();
 		urlReader.fileLoop(inputURL);

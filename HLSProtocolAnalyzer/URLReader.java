@@ -24,16 +24,21 @@ public class URLReader {
 	private static InputStream inStream;
 	private static BufferedReader bufReader;
 	private static String inputLine;
-	private FileChecker_old fileChecker = new FileChecker_old();
+	ExcelResultWriter resultWriter;
+	// private FileChecker_old fileChecker = new FileChecker_old();
 	private LoggerWrapper loggerWrapper = LoggerWrapper.getInstance();
 	private ArrayList<String> masterFileList = new ArrayList<String>();
 	// If extension is .ts, store in mediaFiles List
-	private ArrayList<String> mediaFiles = new ArrayList<String>();
+	private ArrayList<String> mediaSegments = new ArrayList<String>();
 	// If extension is .m3u8, store in mediaPlaylists List
 	private ArrayList<String> playlistFiles = new ArrayList<String>();
 
-	public void ReadInputStream(String inputURL) {
+	public URLReader(String inputURL) {
 		this.inputURL = inputURL;
+		
+		// Creating excel file to save errors
+		resultWriter = new ExcelResultWriter();
+		resultWriter.createExcelFile();
 	}
 
 	public ArrayList<String> getMasterFileList(String inputURL) {
@@ -71,14 +76,14 @@ public class URLReader {
 		 */
 		for (String file : masterFileList) {
 			if ((FilenameUtils.getExtension(file)).equals("ts")) {
-				mediaFiles.add(file);
+				mediaSegments.add(file);
 			} else if ((FilenameUtils.getExtension(file)).equals("m3u8")) {
 				playlistFiles.add(file);
 			} else {
-				loggerWrapper.myLogger.severe("Invalid file extension");
+				loggerWrapper.myLogger.severe("Invalid file extension: " + file);
 			}
 		}
-		System.out.println("Media files: " + mediaFiles);
+		System.out.println("Media Segment files: " + mediaSegments);
 		System.out.println("Playlist files: " + playlistFiles);
 	}
 	
@@ -95,17 +100,18 @@ public class URLReader {
 			String fileName = playlistFiles.get(i);
 			System.out.println("Filename: " + fileName);
 			if (i == 0){
-				checkFile = new MasterPlaylistChecker(baseURL, fileName);
+				checkFile = new MasterPlaylistChecker(baseURL, fileName, mediaSegments, playlistFiles, resultWriter);
 			}
 			else{
-				checkFile = new MediaPlaylistChecker(baseURL, fileName);
+				checkFile = new MediaPlaylistChecker(baseURL, fileName, mediaSegments, playlistFiles, resultWriter);
 			}
 			
 			try {
 				url = new URL(baseURL + fileName);
 				inStream = url.openStream();
 				bufReader = new BufferedReader(new InputStreamReader(inStream));
-				checkFile.runChecks();
+				System.out.println("Checking file " + fileName);
+				checkFile.runChecks(bufReader);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
