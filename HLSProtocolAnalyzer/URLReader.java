@@ -11,6 +11,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.validator.routines.UrlValidator;
 
 // import static HLSProtocolAnalyzer.PlaylistTagConstants;
 
@@ -47,8 +48,6 @@ public class URLReader {
 		 * If valid, gets all the URLs on the page and puts them in a masterFileList array list
 		 */
 		loggerWrapper.myLogger.info("Getting list of files...");
-		// fileList
-		if (isValidURL(inputURL)) {
 			try {
 				Document doc;
 				doc = Jsoup.connect(inputURL).get();
@@ -60,10 +59,6 @@ public class URLReader {
 				e.printStackTrace();
 			}
 			return this.masterFileList;
-		} else {
-			loggerWrapper.myLogger.severe("Invalid URL");
-			return null;
-		}
 	}
 
 	public void fileSeparator() {
@@ -117,10 +112,10 @@ public class URLReader {
 		System.out.println("Completed Checks. Errors in Results.xls");
 	}
 
-	public Boolean isValidURL(String inBaseURL) {
-		HttpURLConnection connection = null;
+	public Boolean isValidURL() {
+		/*HttpURLConnection connection = null;
 		try {
-			URL myurl = new URL(inBaseURL);
+			URL myurl = new URL(inputURL);
 			connection = (HttpURLConnection) myurl.openConnection();
 			// Setting request to header to reduce load
 			connection.setRequestMethod("HEAD");
@@ -135,7 +130,15 @@ public class URLReader {
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
+		}*/
+		
+		UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS);
+		if (urlValidator.isValid(inputURL)) {
+		   return true;
+		} else {
+		   return false;
 		}
+		
 	}
 
 }

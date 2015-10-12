@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -71,9 +72,14 @@ public class AppRunner {
 	public void submitButtonActionPerformed(ActionEvent event){
 		String inputURL = textField.getText();
 		URLReader urlReader = new URLReader(inputURL);
-		ArrayList<String> masterFileList = urlReader.getMasterFileList(inputURL);
-		urlReader.fileSeparator();
-		urlReader.fileLoop(inputURL);
+		if (urlReader.isValidURL()){
+			ArrayList<String> masterFileList = urlReader.getMasterFileList(inputURL);
+			urlReader.fileSeparator();
+			urlReader.fileLoop(inputURL);
+		}
+		else{
+			JOptionPane.showMessageDialog(null, "Please enter a valid URL");
+		}
 		
 	}
 	
