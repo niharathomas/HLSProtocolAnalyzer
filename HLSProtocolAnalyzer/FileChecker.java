@@ -77,8 +77,6 @@ public abstract class FileChecker {
 		 * All other input values are rejected
 		 */
 		if (FilenameUtils.getExtension(inputLine).equals(extenstion)) {
-
-			System.out.println(fileType + " URI : " + inputLine);
 			String name = FilenameUtils.getName(inputLine);
 			if (fileType.equals("Media Playlist")){
 				loggerWrapper.myLogger.info("Media Playlist at lineNumber " + lineNumber);
@@ -96,9 +94,6 @@ public abstract class FileChecker {
 	public void checkBasicTags(){
 		// Basic tag EXTM3U and EXT-X-VERSION checks
 		if (inputLine.startsWith(new String("#EXT-X-VERSION"))) {
-
-			System.out.println("Basic tag: " + inputLine);
-			System.out.println(tagsInFile);
 			if (tagsInFile.containsValue("EXT-X-VERSION")) {
 				resultWriter.writeNewRecord("Repeated Tag", fileName,
 						"Repeated tag #EXT-X-VERSION at line # "
@@ -107,7 +102,6 @@ public abstract class FileChecker {
 						.severe("ERROR!!! Repeated tag #EXT-X-VERSION at line # "
 								+ lineNumber);
 			} else {
-				System.out.println("No repeated basic tags");
 				tagsInFile.put(lineNumber, "EXT-X-VERSION");
 				loggerWrapper.myLogger.info("Line: " + lineNumber + " "
 						+ inputLine);

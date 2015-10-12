@@ -19,24 +19,18 @@ public class MediaPlaylistChecker extends FileChecker{
 	}
 	
 	public void runChecks(BufferedReader bufReader){
-		System.out.println("MasterPlayList!");
+		System.out.println("Checking Media PlayList file..");
 		try {
 			while ((inputLine = bufReader.readLine()) != null) {
 				lineNumber++;
 				if (lineNumber == 1) {
-					System.out.println("Checking first line");
 					checkFirstTag(inputLine, lineNumber);
 				} 
 				else if (!inputLine.startsWith(new String("#"))) {
-
-					System.out.println("Checking non-# lines");
-					// String fileExtension = FilenameUtils.getExtension(inputLine);
 					checkFileTypes("ts", "Media Segment");
 					
 				} 
 				else if (inputLine.startsWith(new String("#"))) {
-
-					System.out.println("Checking # lines");
 					checkBasicTags();
 					checkMediaSegmentTags();
 					checkMediaPlaylistTags();
@@ -46,11 +40,9 @@ public class MediaPlaylistChecker extends FileChecker{
 			}
 			checkMediaSegmentSequence();
 			checkMandatoryTags();
-			System.out.println(tagsInFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 	}
 	
 	public void checkMediaSegmentSequence(){
@@ -118,7 +110,6 @@ public class MediaPlaylistChecker extends FileChecker{
 	}
 
 	public void checkMediaPlaylistTags(){
-		System.out.println("Checking Media Playlist Tags");
 		if (inputLine.startsWith(new String("#EXT-X-TARGETDURATION"))) {
 			if (tagsInFile.containsValue("EXT-X-TARGETDURATION")) {
 				loggerWrapper.myLogger

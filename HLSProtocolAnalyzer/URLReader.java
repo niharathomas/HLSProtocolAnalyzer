@@ -52,7 +52,6 @@ public class URLReader {
 			try {
 				Document doc;
 				doc = Jsoup.connect(inputURL).get();
-				System.out.println("Begin");
 				for (Element file : doc.select("td a")) {
 					this.masterFileList.add(file.attr("href"));
 				}
@@ -60,7 +59,6 @@ public class URLReader {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println("Test " + masterFileList);
 			return this.masterFileList;
 		} else {
 			loggerWrapper.myLogger.severe("Invalid URL");
@@ -83,8 +81,6 @@ public class URLReader {
 				loggerWrapper.myLogger.severe("Invalid file extension: " + file);
 			}
 		}
-		System.out.println("Media Segment files: " + mediaSegments);
-		System.out.println("Playlist files: " + playlistFiles);
 	}
 	
 	public void fileLoop(String inputURL){
@@ -98,7 +94,6 @@ public class URLReader {
 		System.out.println("Looping through files...");
 		for (int i = 0; i < playlistFiles.size(); i++) {
 			String fileName = playlistFiles.get(i);
-			System.out.println("Filename: " + fileName);
 			if (i == 0){
 				checkFile = new MasterPlaylistChecker(baseURL, fileName, mediaSegments, playlistFiles, resultWriter);
 			}
@@ -110,50 +105,17 @@ public class URLReader {
 				url = new URL(baseURL + fileName);
 				inStream = url.openStream();
 				bufReader = new BufferedReader(new InputStreamReader(inStream));
-				System.out.println("Checking file " + fileName);
+
+				System.out.println("File under test: " + fileName);
 				checkFile.runChecks(bufReader);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		
+
+		System.out.println("Completed Checks. Errors in Results.xls");
 	}
-
-	/*public void printStream(String inputURL) {
-		if (isValidURL(inputURL)) {
-			try {
-				url = new URL(inputURL);
-				System.out.println("Accessing url...");
-
-				baseURL = FilenameUtils.getPath(inputURL);
-				fileName = FilenameUtils.getName(inputURL);
-				loggerWrapper.myLogger.info("Base URL is:" + baseURL);
-
-				inStream = url.openStream();
-				bufReader = new BufferedReader(new InputStreamReader(inStream));
-
-				System.out.println("Beginning tests...");
-				fileChecker.fileCheckLoop(bufReader, baseURL, fileName);
-
-				bufReader.close();
-			} catch (MalformedURLException mue) {
-				// Catch exception and print stacktrace
-				System.out.println("MalformedURLException caught!");
-				mue.printStackTrace();
-				System.exit(1);
-			} catch (IOException ioe) {
-				// Catch exception and print stacktrace
-				System.out.println("IOException caught!");
-				ioe.printStackTrace();
-				System.exit(1);
-			}
-		}
-
-		else {
-			System.out.println("Invalid URL");
-		}
-	}*/
 
 	public Boolean isValidURL(String inBaseURL) {
 		HttpURLConnection connection = null;
@@ -163,7 +125,6 @@ public class URLReader {
 			// Setting request to header to reduce load
 			connection.setRequestMethod("HEAD");
 			int code = connection.getResponseCode();
-			System.out.println("" + code);
 			return true;
 		} catch (MalformedURLException e) {
 			// Handle invalid URL

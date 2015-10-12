@@ -14,23 +14,19 @@ public class MasterPlaylistChecker extends FileChecker{
 	}
 	
 	public void runChecks(BufferedReader bufReader){
-		System.out.println("MasterPlayList!");
+		System.out.println("Checking MasterPlayList file...");
 		try {
 			while ((inputLine = bufReader.readLine()) != null) {
 				lineNumber++;
-				System.out.println("Line is: " + inputLine);
 				if (lineNumber == 1) {
-					System.out.println("Checking first line");
 					checkFirstTag(inputLine, lineNumber);
 				} 
 				else if (!inputLine.startsWith(new String("#"))) {
-					System.out.println("Checking non-# lines");
 					// If line is not a "tagged" line, check for valid file type depending on the input file
 					// String fileExtension = FilenameUtils.getExtension(inputLine);
 					checkFileTypes("m3u8", "Media Playlist");
 				} 
 				else if (inputLine.startsWith(new String("#"))) {
-					System.out.println("Checking # lines");
 					checkBasicTags();
 					
 				}
@@ -39,7 +35,6 @@ public class MasterPlaylistChecker extends FileChecker{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 	}
 	
 	public void checkMasterPlaylistTags(){
