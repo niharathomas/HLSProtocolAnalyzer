@@ -35,8 +35,6 @@ public class MasterPlaylistChecker extends FileChecker{
 					
 				}
 				checkValidURIs("Media Playlist", mediaPlaylists);
-				System.out.println("Playlists: " + mediaPlaylists);
-				System.out.println("valid playlists: " + validMediaPlaylists);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

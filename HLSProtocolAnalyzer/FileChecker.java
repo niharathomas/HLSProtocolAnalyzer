@@ -12,18 +12,18 @@ import org.apache.commons.io.FilenameUtils;
 
 public abstract class FileChecker {
 	protected int lineNumber = 0;
-	private double duration;
-	private int version;
+	protected double duration;
+	protected int version;
 	private static String baseURL;
 	protected static String inputLine;
 	protected static String fileName;
 	ExcelResultWriter resultWriter;
-	private LoggerWrapper loggerWrapper = LoggerWrapper.getInstance();
+	protected LoggerWrapper loggerWrapper = LoggerWrapper.getInstance();
 	
 	// List to store the tags found in the file
 	private Map<Integer, String> tags = new HashMap<Integer, String>(200);
 	// List to store all tags found in the input file
-	private Map<Integer, String> tagsInFile = new HashMap<Integer, String>(50);
+	protected Map<Integer, String> tagsInFile = new HashMap<Integer, String>(50);
 	// Array list to store media segments found in the input file
 	protected ArrayList<String> mediaSegments = new ArrayList<String>();
 	// Array list to store valid media segments found at the top level
