@@ -14,7 +14,6 @@ public class MasterPlaylistChecker extends FileChecker{
 	}
 	
 	public void runChecks(BufferedReader bufReader){
-		System.out.println("Checking MasterPlayList file...");
 		try {
 			while ((inputLine = bufReader.readLine()) != null) {
 				lineNumber++;
@@ -38,7 +37,19 @@ public class MasterPlaylistChecker extends FileChecker{
 	}
 	
 	public void checkMasterPlaylistTags(){
-		
+		if (inputLine.startsWith(new String("#EXT-X-STREAM-INF"))) {
+			tagsInFile.put(lineNumber, "EXT-X-STREAM-INF");
+			loggerWrapper.myLogger.info("Variant stream at line: "
+					+ lineNumber);
+			String programId = inputLine.substring(
+					inputLine.indexOf("=") + 1, inputLine.indexOf(","));
+			loggerWrapper.myLogger.info("ProgramID: " + programId);
+
+		} else {
+			System.out.println("Invalid Line: " + lineNumber + " "
+					+ inputLine);
+		}
+
 	}
 
 }

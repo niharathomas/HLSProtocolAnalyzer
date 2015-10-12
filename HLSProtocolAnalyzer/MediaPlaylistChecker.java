@@ -19,7 +19,6 @@ public class MediaPlaylistChecker extends FileChecker{
 	}
 	
 	public void runChecks(BufferedReader bufReader){
-		System.out.println("Checking Media PlayList file..");
 		try {
 			while ((inputLine = bufReader.readLine()) != null) {
 				lineNumber++;

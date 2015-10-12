@@ -96,7 +96,7 @@ public abstract class FileChecker {
 		if (inputLine.startsWith(new String("#EXT-X-VERSION"))) {
 			if (tagsInFile.containsValue("EXT-X-VERSION")) {
 				resultWriter.writeNewRecord("Repeated Tag", fileName,
-						"Repeated tag #EXT-X-VERSION at line # "
+						"Repeated tag EXT-X-VERSION at line # "
 								+ lineNumber);
 				loggerWrapper.myLogger
 						.severe("ERROR!!! Repeated tag #EXT-X-VERSION at line # "
