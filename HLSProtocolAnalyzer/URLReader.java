@@ -127,15 +127,12 @@ public class URLReader {
 			int code = connection.getResponseCode();
 			return true;
 		} catch (MalformedURLException e) {
-			// Handle invalid URL
 			return false;
 
 		} catch (ProtocolException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}

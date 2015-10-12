@@ -88,8 +88,6 @@ public class AppRunner {
 	public static void main(String []args){
 		LoggerWrapper loggerWrapper = LoggerWrapper.getInstance();
 		loggerWrapper.myLogger.info("Initializing...");
-		
-		// String checkLevel = args[0];
 		loggerWrapper.myLogger.info("Creating User Interface...");
 		AppRunner app = new AppRunner();
 		

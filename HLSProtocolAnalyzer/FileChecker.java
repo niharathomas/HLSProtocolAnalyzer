@@ -31,7 +31,7 @@ public abstract class FileChecker {
 	// Array list to store valid media playlists found at the top level
 	protected ArrayList<String> validMediaPlaylists = new ArrayList<String>();
 	// Array list that will be used to compare valid URIs to URIs from the file
-	ArrayList<String> list = new ArrayList<String>();
+	protected ArrayList<String> list = new ArrayList<String>();
 	
 	public FileChecker(String inBaseURL, String inFileName, ArrayList<String> inMediaSegments, 
 			ArrayList<String> inPlaylistFiles, ExcelResultWriter inResultWriter){
@@ -73,7 +73,7 @@ public abstract class FileChecker {
 		/*
 		 * Checks for the file types found in the master playlist or media playlist
 		 * If Master playlist: accepts m3u8 and "Media Playlist" as the input
-		 * If Media Playlist: accepts ts and "Media Segment" as th input
+		 * If Media Playlist: accepts ts and "Media Segment" as the input
 		 * All other input values are rejected
 		 */
 		if (FilenameUtils.getExtension(inputLine).equals(extenstion)) {
@@ -125,9 +125,8 @@ public abstract class FileChecker {
 		}
 		for (String file: checkList){
 			if (!list.contains(file)){
-				resultWriter.writeNewRecord("URI does not exist", fileName,
-						file + " at line # "
-								+ lineNumber +" does not exist");
+				resultWriter.writeNewRecord("File does not exist", fileName,
+						file + " does not exist");
 			}
 		}
 		

@@ -36,10 +36,10 @@ public class MediaPlaylistChecker extends FileChecker{
 					checkMediaPlaylistTags();
 					
 				}
-				// checkValidURIs("Media Segment", mediaSegments);
 			}
 			checkMediaSegmentSequence();
 			checkMandatoryTags();
+			checkValidURIs("Media Segment", mediaSegments);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -146,7 +146,7 @@ public class MediaPlaylistChecker extends FileChecker{
 		} else if (inputLine.startsWith(new String("#EXT-X-ENDLIST"))) {
 			if (!inputLine.equals("#EXT-X-ENDLIST")){
 				resultWriter.writeNewRecord("Invalid tag", fileName,
-						"Tag " + inputLine + " found at line #: " + lineNumber);
+						"Invalid Tag " + inputLine + " found at line #: " + lineNumber);
 			}
 			else{
 				tagsInFile.put(lineNumber, "EXT-X-ENDLIST");
