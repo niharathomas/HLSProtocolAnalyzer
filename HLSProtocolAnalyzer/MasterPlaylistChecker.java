@@ -18,6 +18,7 @@ public class MasterPlaylistChecker extends FileChecker{
 		try {
 			while ((inputLine = bufReader.readLine()) != null) {
 				lineNumber++;
+				System.out.println("Line is: " + inputLine);
 				if (lineNumber == 1) {
 					System.out.println("Checking first line");
 					checkFirstTag(inputLine, lineNumber);
@@ -33,6 +34,9 @@ public class MasterPlaylistChecker extends FileChecker{
 					checkBasicTags();
 					
 				}
+				checkValidURIs("Media Playlist", mediaPlaylists);
+				System.out.println("Playlists: " + mediaPlaylists);
+				System.out.println("valid playlists: " + validMediaPlaylists);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

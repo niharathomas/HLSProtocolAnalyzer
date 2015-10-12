@@ -3,6 +3,7 @@ package HLSProtocolAnalyzer;
 import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,13 +25,15 @@ public abstract class FileChecker {
 	// List to store all tags found in the input file
 	private Map<Integer, String> tagsInFile = new HashMap<Integer, String>(50);
 	// Array list to store media segments found in the input file
-	private ArrayList<String> mediaSegments = new ArrayList<String>();
+	protected ArrayList<String> mediaSegments = new ArrayList<String>();
 	// Array list to store valid media segments found at the top level
-	private ArrayList<String> validMediaSegments = new ArrayList<String>();
+	protected ArrayList<String> validMediaSegments = new ArrayList<String>();
 	// Array list to store media playlists found in the input file
-	private ArrayList<String> mediaPlaylists = new ArrayList<String>();
+	protected ArrayList<String> mediaPlaylists = new ArrayList<String>();
 	// Array list to store valid media playlists found at the top level
-	private ArrayList<String> validMediaPlaylists = new ArrayList<String>();
+	protected ArrayList<String> validMediaPlaylists = new ArrayList<String>();
+	// Array list that will be used to compare valid URIs to URIs from the file
+	ArrayList<String> list = new ArrayList<String>();
 	List<String> mandatoryTags = Arrays.asList("#EXTM3U");
 	
 	public FileChecker(String inBaseURL, String inFileName, ArrayList<String> inMediaSegments, 
@@ -82,6 +85,7 @@ public abstract class FileChecker {
 			String name = FilenameUtils.getName(inputLine);
 			if (fileType.equals("Media Playlist")){
 				loggerWrapper.myLogger.info("Media Playlist at lineNumber " + lineNumber);
+				mediaPlaylists.add(name);
 			}
 			else if (fileType.equals("Media Segment")){
 				mediaSegments.add(name);
@@ -115,6 +119,26 @@ public abstract class FileChecker {
 				
 				// Store version number
 				version = Integer.parseInt(inputLine.substring(inputLine.indexOf(":") + 1));
+			}
+		}
+		
+	}
+	
+	public void checkValidURIs(String fileType, ArrayList<String> checkList){
+		if (fileType.equals("Media Playlist")){
+			list = validMediaPlaylists;
+		}
+		else if (fileType.equals("Media Segment")){
+			list = validMediaSegments;
+		}
+		else{
+			loggerWrapper.myLogger.severe("Invalid file type");
+		}
+		for (String file: checkList){
+			if (!list.contains(file)){
+				resultWriter.writeNewRecord("URI does not exist", fileName,
+						file + " at line # "
+								+ lineNumber +" does not exist");
 			}
 		}
 		
